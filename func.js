@@ -2,7 +2,7 @@ function f1() {
     return "Rodando f1...";
 }
 
-const f2 = function() {
+const f2 = function () {
     return "Rodando f2...";
 }
 
