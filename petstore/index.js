@@ -18,7 +18,7 @@ mongoose.connect(DB.DB_URL, DB.DB_SETTINGS)
     .then(() => console.log(`Conectado no MongoDB: ${DB.DB_URL}`))
     .catch(err => console.log(`Erro ao conectar no MongoDB: ${err}`));
 
-const porta = process.env.PORT || 3001;
+const porta = process.env.PORT || 3000;
 
 app.listen(porta, () => {
     console.log(`Petstore rodando na porta ${porta}`);

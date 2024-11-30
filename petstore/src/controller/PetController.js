@@ -4,6 +4,13 @@ module.exports = {
     async inserir(req, res) {
         const { nome, raca, idade } = req.body;
 
+        if (idade < 0 || idade > 200) {
+            return res.status(400).json({
+                "erro": "Idade inválida",
+                "mensagem": "A idade deve estar entre 0 e 200"
+            });
+        }
+
         // SELECT * FROM pet WHERE nome = ${nome}
         const petExistente = await Pet.findOne({ nome });
 
@@ -19,16 +26,16 @@ module.exports = {
     },
 
     async buscar(req, res) {
-        const { nome } = req.query;
+        const { nome, raca } = req.query;
         let pets = [];
 
-        if (nome) {
-            // SELECT * FROM pet WHERE nome = ${petRequest.nome}
-            pets = await Pet.find({ nome: nome });
-        } else {
-            // SELECT * FROM pet
-            pets = await Pet.find();
-        }
+        // Spread syntax ...(condition && { key: value }) inclui campos em objects dinamicamente baseado em condições.
+        let query = {
+            ...(nome && { nome: nome }),
+            ...(raca && { raca: raca }),
+        };
+
+        pets = await Pet.find(query);
 
         return res.status(200).json(pets);
     }
