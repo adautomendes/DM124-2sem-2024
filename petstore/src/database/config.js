@@ -4,6 +4,8 @@ module.exports = {
     DB_URL: `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}`,
 
     DB_SETTINGS: {
-        dbName: `${process.env.DB_NAME}`
+        dbName: `${process.env.DB_NAME}`,
+        serverSelectionTimeoutMS: 5000,
+        heartbeatFrequencyMS: 5000
     }
 };

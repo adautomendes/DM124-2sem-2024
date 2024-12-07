@@ -2,11 +2,27 @@ services:
   mongo-db:
     image: mongo
     container_name: "dm124-mongodb"
+    command:
+      - '--logpath'
+      - '/var/log/mongodb/mongodb.log'
     restart: unless-stopped
     ports:
       - 27017:27017
     networks:
       - services-network
+  auth:
+    build:
+      context: ./auth
+      dockerfile: ./Dockerfile
+    container_name: "dm124-auth"
+    ports:
+      - 3001:3001
+    networks:
+      - services-network
+    environment:
+      - PORT=3001
+      - CHAVE_PRIVADA=UmaChaveBemLongaParaDificultarODecode
+      - TEMPO_EXP=1d
   petstore:
     build:
       context: ./petstore
@@ -18,11 +34,13 @@ services:
       - services-network
     depends_on:
       - mongo-db
+      - auth
     environment:
       - PORT=3000
       - DB_HOST=mongo-db
       - DB_PORT=27017
       - DB_NAME=petstore
+      - AUTH_SERVER=http://auth:3001
 networks:
   services-network:
     driver: bridge

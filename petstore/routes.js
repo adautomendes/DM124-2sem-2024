@@ -1,5 +1,6 @@
 const express = require('express');
 const PetController = require('./src/controller/PetController');
+const AuthController = require('./src/controller/AuthController');
 const rootRouter = express.Router();
 const petRouter = express.Router();
 
@@ -12,8 +13,10 @@ rootRouter.get('/',
     }
 );
 
-rootRouter.use('/pet', petRouter);
-petRouter.post('/', PetController.inserir);
+rootRouter.use('/pet', AuthController.verificaJWT, petRouter);
+petRouter.post('/', PetController.validaPet, PetController.inserir);
+petRouter.patch('/:nome', PetController.validaPet, PetController.atualizar);
 petRouter.get('/', PetController.buscar);
+petRouter.delete('/:nome', PetController.excluir);
 
 module.exports = rootRouter;

@@ -5,15 +5,42 @@ const DB = require('./src/database/config');
 require('dotenv').config();
 
 const app = express();
+let dbUp = true;
 
 app.use(express.json());
 
+mongoose.connection.on('connected', () => {
+    console.error(`[CEASE ALARM] - DB up`);
+    dbUp = true;
+});
+mongoose.connection.on('disconnected', () => {
+    console.error(`[RAISE ALARM] - DB down`);
+    dbUp = false;
+});
+
 app.use((req, res, next) => {
+    console.log(`[MIDDLEWARE] - DB Health Check`);
+    if (dbUp) {
+        next();
+    } else {
+        return res.status(503).json({
+            "type": "PET003",
+            "title": "MongoDB fora do ar.",
+            "status": 503,
+            "detail": "Não foi possível conectar ao MongoDB",
+            "instance": "/pet"
+        });
+    }
+});
+
+app.use((req, res, next) => {
+    console.log(`[MIDDLEWARE] - Imprime body`);
     console.log(req.body);
     next();
 });
 
 app.use('/', routes);
+
 
 mongoose.connect(DB.DB_URL, DB.DB_SETTINGS)
     .then(() => console.log(`Conectado no MongoDB: ${DB.DB_URL}`))
