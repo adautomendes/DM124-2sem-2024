@@ -1,0 +1,28 @@
+services:
+  mongo-db:
+    image: mongo
+    container_name: "dm124-mongodb"
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+    networks:
+      - services-network
+  petstore:
+    build:
+      context: ./petstore
+      dockerfile: ./Dockerfile
+    container_name: "dm124-petstore"
+    ports:
+      - 3000:3000
+    networks:
+      - services-network
+    depends_on:
+      - mongo-db
+    environment:
+      - PORT=3000
+      - DB_HOST=mongo-db
+      - DB_PORT=27017
+      - DB_NAME=petstore
+networks:
+  services-network:
+    driver: bridge

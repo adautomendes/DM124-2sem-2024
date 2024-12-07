@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes');
 const DB = require('./src/database/config');
+require('dotenv').config();
 
 const app = express();
 
@@ -18,7 +19,7 @@ mongoose.connect(DB.DB_URL, DB.DB_SETTINGS)
     .then(() => console.log(`Conectado no MongoDB: ${DB.DB_URL}`))
     .catch(err => console.log(`Erro ao conectar no MongoDB: ${err}`));
 
-const porta = process.env.PORT || 3000;
+const porta = process.env.PORT;
 
 app.listen(porta, () => {
     console.log(`Petstore rodando na porta ${porta}`);

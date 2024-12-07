@@ -5,9 +5,13 @@ module.exports = {
         const { nome, raca, idade } = req.body;
 
         if (idade < 0 || idade > 200) {
+            // RFC 7807 - Problem Details
             return res.status(400).json({
-                "erro": "Idade inválida",
-                "mensagem": "A idade deve estar entre 0 e 200"
+                "type": "ERR001",
+                "title": "Idade inválida.",
+                "status": 400,
+                "detail": "A idade deve estar entre 0 e 200.",
+                "instance": "/pet"
             });
         }
 
@@ -29,14 +33,19 @@ module.exports = {
         const { nome, raca } = req.query;
         let pets = [];
 
-        // Spread syntax ...(condition && { key: value }) inclui campos em objects dinamicamente baseado em condições.
+        // Spread operator
         let query = {
             ...(nome && { nome: nome }),
-            ...(raca && { raca: raca }),
+            ...(raca && { raca: raca })
         };
+
+        console.log(query);
 
         pets = await Pet.find(query);
 
-        return res.status(200).json(pets);
+        return res.status(200).json({
+            size: pets.length,
+            results: pets
+        });
     }
 };
