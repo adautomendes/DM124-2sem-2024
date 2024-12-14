@@ -1,21 +1,21 @@
 const Pet = require('../model/Pet');
+const logger = require('../logger')(__filename);
 
 module.exports = {
     async inserir(req, res) {
-        console.log(`[ROTA] - Inserir`);
         const { nome, raca, idade } = req.body;
 
         // SELECT * FROM pet WHERE nome = ${nome}
         const petExistente = await Pet.findOne({ nome });
 
         if (petExistente) {
-            console.log(`Pet já existe ${petExistente.nome}.`);
+            logger.info(`Pet já existe ${petExistente.nome}.`);
             return res.status(200).json(petExistente);
         }
 
         const pet = await Pet.create({ nome, raca, idade });
 
-        console.log(`Pet criado ${pet.nome}.`);
+        logger.info(`Pet criado ${pet.nome}.`);
         return res.status(201).json(pet);
     },
 
@@ -26,7 +26,7 @@ module.exports = {
 
         // UPDATE XX SET XX=YY WHERE ...
         const updateReturn = await Pet.updateOne({ nome }, { idade });
-        console.log(updateReturn);
+        logger.debug(updateReturn);
         
         const updatedPet = await Pet.findOne({ nome });
         res.status(200).json(updatedPet);
@@ -42,7 +42,7 @@ module.exports = {
             ...(raca && { raca: raca })
         };
 
-        console.log(query);
+        logger.debug(query);
 
         pets = await Pet.find(query);
 
@@ -60,7 +60,7 @@ module.exports = {
     },
 
     validaIdade(req, res, next) {
-        console.log(`[MIDDLEWARE] - Valida Idade`);
+        logger.info(`[MIDDLEWARE] - Valida Idade`);
         const { idade } = req.body;
 
         if (idade < 0 || idade > 200) {
@@ -77,7 +77,7 @@ module.exports = {
     },
 
     async validaPetExistente(req, res, next) {
-        console.log(`[MIDDLEWARE] - Valida Pet Existente`);
+        logger.info(`[MIDDLEWARE] - Valida Pet Existente`);
         const { nome } = req.params;
 
         const pet = await Pet.find({ nome });

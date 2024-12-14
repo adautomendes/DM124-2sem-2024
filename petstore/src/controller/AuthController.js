@@ -1,9 +1,10 @@
 const axios = require('axios');
+const logger = require('../logger')(__filename);
 require('dotenv').config();
 
 module.exports = {
     verificaJWT(req, res, next) {
-        console.log(`[MIDDLEWARE] - Verifica JWT`);
+        logger.debug(`[MIDDLEWARE] - Verifica JWT`);
         const { token } = req.headers;
 
         let request = {
@@ -16,15 +17,16 @@ module.exports = {
             }
         }
 
-        console.log(`Enviando request para [${request.url}].`);
+        logger.info(`Enviando request para [${request.url}].`);
+        logger.debug(JSON.stringify(request));
         axios.post(request.url, request.data, request.config)
             .then(response => {
-                console.log(`Token ok!`);
+                logger.info(`Token ok!`);
                 next();
             })
             .catch(error => {
                 if (error.response) {
-                    console.log(`Token inválido.`);
+                    logger.info(`Token inválido.`);
                     return res.status(error.response.status).json(error.response.data);
                 }
 
