@@ -14,9 +14,9 @@ rootRouter.get('/',
 );
 
 rootRouter.use('/pet', AuthController.verificaJWT, petRouter);
-petRouter.post('/', PetController.validaPet, PetController.inserir);
-petRouter.patch('/:nome', PetController.validaPet, PetController.atualizar);
+petRouter.post('/', PetController.validaIdade, PetController.inserir);
+petRouter.patch('/:nome', PetController.validaPetExistente, PetController.validaIdade, PetController.atualizar);
 petRouter.get('/', PetController.buscar);
-petRouter.delete('/:nome', PetController.excluir);
+petRouter.delete('/:nome', PetController.validaPetExistente, PetController.excluir);
 
 module.exports = rootRouter;

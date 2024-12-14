@@ -21,6 +21,7 @@ services:
       - services-network
     environment:
       - PORT=3001
+      - NODE_ENV=prod
       - CHAVE_PRIVADA=UmaChaveBemLongaParaDificultarODecode
       - TEMPO_EXP=1d
   petstore:
@@ -37,6 +38,7 @@ services:
       - auth
     environment:
       - PORT=3000
+      - NODE_ENV=prod
       - DB_HOST=mongo-db
       - DB_PORT=27017
       - DB_NAME=petstore

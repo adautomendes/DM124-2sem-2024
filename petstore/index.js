@@ -1,5 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
+const fs = require('fs');
+const path = require('path');
 const routes = require('./routes');
 const DB = require('./src/database/config');
 require('dotenv').config();
@@ -8,6 +11,17 @@ const app = express();
 let dbUp = true;
 
 app.use(express.json());
+
+if (process.env.NODE_ENV == 'dev') {
+    app.use(morgan('short'));
+} else {
+    app.use(morgan('tiny'));
+
+    const logFileStream = fs.createWriteStream(path.join(__dirname, 'app.log'), { flags: 'a' });
+    app.use(morgan('combined', {
+        stream: logFileStream
+    }));
+}
 
 mongoose.connection.on('connected', () => {
     console.error(`[CEASE ALARM] - DB up`);
