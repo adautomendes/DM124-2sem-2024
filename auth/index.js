@@ -2,6 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const fs = require('fs');
 const path = require('path');
+const logger = require('./src/logger')(__filename);
+
 const routes = require('./routes');
 require('dotenv').config();
 
@@ -21,7 +23,7 @@ if (process.env.NODE_ENV == 'dev') {
 }
 
 app.use((req, res, next) => {
-    console.log(req.body);
+    logger.request(req);
     next();
 });
 
@@ -30,5 +32,5 @@ app.use('/', routes);
 const porta = process.env.PORT;
 
 app.listen(porta, () => {
-    console.log(`Auth rodando na porta ${porta}`);
+    logger.info(`Auth rodando na porta ${porta}`);
 });

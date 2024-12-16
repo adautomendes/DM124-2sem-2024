@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const logger = require('../logger')(__filename);
 require('dotenv').config();
 
 module.exports = {
@@ -11,7 +12,7 @@ module.exports = {
                 expiresIn: `${process.env.TEMPO_EXP}`
             });
 
-            console.log(`User ${user} foi logado com sucesso.`);
+            logger.info(`User ${user} foi logado com sucesso.`);
             return res.status(200).json({ token, expiresIn: `${process.env.TEMPO_EXP}` });
         } else {
             return res.status(401).json({
@@ -28,7 +29,7 @@ module.exports = {
         const { token } = req.headers;
 
         if (token) {
-            console.log(`Verificando token ${token.slice(0, 10)}...`);
+            logger.debug(`Verificando token ${token.slice(0, 10)}...`);
 
             jwt.verify(token, process.env.CHAVE_PRIVADA, (error, decoded) => {
                 if (error) {

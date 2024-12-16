@@ -49,7 +49,7 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-    logger.debug(req.body);
+    logger.request(req);
     next();
 });
 
